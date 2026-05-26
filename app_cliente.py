@@ -11,7 +11,7 @@ from database import (
 # =========================================
 
 st.set_page_config(
-    page_title="Lista de Precios",
+    page_title="La Diagonal Distribuidora",
     layout="wide"
 )
 
@@ -45,7 +45,7 @@ df = pd.DataFrame(
 # =========================================
 
 st.title(
-    "Lista de Precios"
+    "Lista de Precios - La Diagonal Distribuidora"
 )
 
 # =========================================
