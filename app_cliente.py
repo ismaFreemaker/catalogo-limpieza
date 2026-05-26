@@ -45,7 +45,8 @@ df = pd.DataFrame(
 # =========================================
 
 st.title(
-    "Lista de Precios - La Diagonal Distribuidora"
+    "La Diagonal Distribuidora \n Lista de Precios"
+    
 )
 
 # =========================================
