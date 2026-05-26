@@ -44,9 +44,22 @@ df = pd.DataFrame(
 # TÍTULO
 # =========================================
 
-st.title(
-    "La Diagonal Distribuidora \n Lista de Precios"
-    
+st.markdown(
+    st.markdown(
+    """
+    <h1 style='text-align: center;'>
+
+    La Diagonal Distribuidora
+    <br>
+    <span style='font-size: 40px;'>
+    Lista de Precios
+    </span>
+
+    </h1>
+    """,
+
+    unsafe_allow_html=True
+    )
 )
 
 # =========================================
