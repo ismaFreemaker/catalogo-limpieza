@@ -1,5 +1,4 @@
 streamlit
 pandas
+pdfplumber
 openpyxl
-pillow
-streamlit-paste-button
