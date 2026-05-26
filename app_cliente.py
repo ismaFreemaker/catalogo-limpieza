@@ -51,7 +51,7 @@ st.markdown(
 
     La Diagonal Distribuidora
     </h1>
-    <br>
+    
     
     <h2>
     <span>
