@@ -45,7 +45,7 @@ df = pd.DataFrame(
 # =========================================
 
 st.markdown(
-    st.markdown(
+    
     """
     <h1 style='text-align: center;'>
 
@@ -59,7 +59,7 @@ st.markdown(
     """,
 
     unsafe_allow_html=True
-    )
+    
 )
 
 # =========================================
