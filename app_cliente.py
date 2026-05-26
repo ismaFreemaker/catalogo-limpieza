@@ -50,12 +50,15 @@ st.markdown(
     <h1 style='text-align: center;'>
 
     La Diagonal Distribuidora
+    </h1>
     <br>
+    
+    <h2>
     <span style='font-size: 40px;'>
     Lista de Precios
     </span>
-
-    </h1>
+    </h2>
+    
     """,
 
     unsafe_allow_html=True
