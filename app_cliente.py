@@ -54,7 +54,7 @@ st.markdown(
     <br>
     
     <h2>
-    <span style='font-size: 40px;'>
+    <span>
     Lista de Precios
     </span>
     </h2>
