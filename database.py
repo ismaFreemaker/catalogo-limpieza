@@ -72,6 +72,8 @@ def obtener_productos():
 
         WHERE activo = 1
 
+        ORDER BY descripcion
+
     """)
 
     productos = cursor.fetchall()
@@ -81,10 +83,10 @@ def obtener_productos():
     return productos
 
 # =========================================
-# VERIFICAR SI EXISTE
+# BUSCAR PRODUCTO
 # =========================================
 
-def producto_existe(
+def buscar_producto_por_descripcion(
     descripcion
 ):
 
@@ -109,29 +111,68 @@ def producto_existe(
 
     conn.close()
 
-    return resultado is not None
+    return resultado
+
+# =========================================
+# ACTUALIZAR PRODUCTO
+# =========================================
+
+def actualizar_producto(
+
+    rubro,
+    descripcion,
+    precio_lista,
+    precio_venta,
+    proveedor=""
+
+):
+
+    conn = conectar()
+
+    cursor = conn.cursor()
+
+    cursor.execute("""
+
+        UPDATE productos
+
+        SET
+
+            rubro = ?,
+            precio_lista = ?,
+            precio_venta = ?,
+            proveedor = ?,
+            activo = 1
+
+        WHERE LOWER(descripcion)
+        = LOWER(?)
+
+    """, (
+
+        rubro,
+        precio_lista,
+        precio_venta,
+        proveedor,
+        descripcion
+
+    ))
+
+    conn.commit()
+
+    conn.close()
 
 # =========================================
 # INSERTAR PRODUCTO
 # =========================================
 
 def insertar_producto(
+
     rubro,
     descripcion,
     precio_lista,
     precio_venta,
     proveedor=""
+
 ):
-
-    # =====================================
-    # EVITAR DUPLICADOS
-    # =====================================
-
-    if producto_existe(
-        descripcion
-    ):
-
-        return
 
     conn = conectar()
 
@@ -166,6 +207,58 @@ def insertar_producto(
     conn.close()
 
 # =========================================
+# GUARDAR O ACTUALIZAR
+# =========================================
+
+def guardar_o_actualizar_producto(
+
+    rubro,
+    descripcion,
+    precio_lista,
+    precio_venta,
+    proveedor=""
+
+):
+
+    producto_existente = (
+        buscar_producto_por_descripcion(
+            descripcion
+        )
+    )
+
+    # =====================================
+    # SI EXISTE
+    # =====================================
+
+    if producto_existente:
+
+        actualizar_producto(
+
+            rubro,
+            descripcion,
+            precio_lista,
+            precio_venta,
+            proveedor
+
+        )
+
+    # =====================================
+    # SI NO EXISTE
+    # =====================================
+
+    else:
+
+        insertar_producto(
+
+            rubro,
+            descripcion,
+            precio_lista,
+            precio_venta,
+            proveedor
+
+        )
+
+# =========================================
 # DESACTIVAR PRODUCTO
 # =========================================
 
@@ -189,4 +282,4 @@ def desactivar_producto(
 
     conn.commit()
 
-    conn.close() 
+    conn.close()    

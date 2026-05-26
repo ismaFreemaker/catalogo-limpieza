@@ -1,7 +1,9 @@
 import pdfplumber
 import re
 
-from database import insertar_producto
+from database import (
+    guardar_o_actualizar_producto
+)
 
 # =========================================
 # LIMPIAR PRECIO
@@ -24,6 +26,28 @@ def limpiar_precio(texto):
     except:
 
         return 0
+
+# =========================================
+# NORMALIZAR DESCRIPCIÓN
+# =========================================
+
+def normalizar_descripcion(
+    texto
+):
+
+    texto = (
+        str(texto)
+        .upper()
+        .strip()
+    )
+
+    texto = re.sub(
+        r"\s+",
+        " ",
+        texto
+    )
+
+    return texto
 
 # =========================================
 # IMPORTAR PDF
@@ -66,13 +90,18 @@ def importar_pdf(
                 # =============================
 
                 if (
+
                     "Listado de productos"
                     in linea
+
                     or "WhatsApp"
                     in linea
+
                     or "La Diagonal"
                     in linea
+
                     or linea == ""
+
                 ):
 
                     continue
@@ -88,21 +117,20 @@ def importar_pdf(
                     linea
                 )
 
-                # Necesitamos 2 precios
-                # Lista y comercio
+                # Necesitamos mínimo 2 precios
 
                 if len(precios) < 2:
                     continue
 
                 # =============================
-                # PRECIO COMERCIO
+                # PRECIOS
                 # =============================
 
                 precio_lista = limpiar_precio(
                     precios[-2]
                 )
 
-                precio_comercio = limpiar_precio(
+                precio_venta = limpiar_precio(
                     precios[-1]
                 )
 
@@ -124,20 +152,25 @@ def importar_pdf(
                 )
 
                 # =============================
-                # DETECTAR RUBRO
+                # RUBROS
                 # =============================
 
                 rubro = ""
 
                 posibles_rubros = [
+
                     "QUIMICA",
                     "PERFUMERIA",
-                    "LIMPIEZA"
+                    "LIMPIEZA",
+                    "BEBIDAS",
+                    "PAPELERA",
+                    "ALMACEN"
+
                 ]
 
                 for r in posibles_rubros:
 
-                    if r in texto_sin_precios:
+                    if r in texto_sin_precios.upper():
 
                         rubro = r
 
@@ -154,7 +187,9 @@ def importar_pdf(
                 # =============================
 
                 descripcion = (
-                    texto_sin_precios
+                    normalizar_descripcion(
+                        texto_sin_precios
+                    )
                 )
 
                 # =============================
@@ -162,8 +197,11 @@ def importar_pdf(
                 # =============================
 
                 if (
+
                     descripcion == ""
-                    or precio_comercio <= 0
+
+                    or precio_venta <= 0
+
                 ):
 
                     continue
@@ -183,7 +221,7 @@ def importar_pdf(
                     precio_lista,
 
                     "precio_venta":
-                    precio_comercio
+                    precio_venta
                 })
 
     return productos
@@ -199,7 +237,7 @@ def guardar_productos(
 
     for p in productos:
 
-        insertar_producto(
+        guardar_o_actualizar_producto(
 
             rubro=p["rubro"],
 

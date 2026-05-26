@@ -1,6 +1,53 @@
 import pandas as pd
+import re
 
-from database import insertar_producto
+from database import (
+    guardar_o_actualizar_producto
+)
+
+# =========================================
+# LIMPIAR PRECIO
+# =========================================
+
+def limpiar_precio(valor):
+
+    texto = (
+        str(valor)
+        .replace("$", "")
+        .replace(".", "")
+        .replace(",", ".")
+        .strip()
+    )
+
+    try:
+
+        return float(texto)
+
+    except:
+
+        return 0
+
+# =========================================
+# NORMALIZAR DESCRIPCIÓN
+# =========================================
+
+def normalizar_descripcion(
+    texto
+):
+
+    texto = (
+        str(texto)
+        .upper()
+        .strip()
+    )
+
+    texto = re.sub(
+        r"\s+",
+        " ",
+        texto
+    )
+
+    return texto
 
 # =========================================
 # IMPORTAR EXCEL
@@ -10,6 +57,8 @@ def importar_excel(
     archivo_excel,
     proveedor=""
 ):
+
+    productos = []
 
     # =====================================
     # LEER EXCEL
@@ -38,22 +87,37 @@ def importar_excel(
     # =====================================
 
     posibles_rubros = [
+
         "rubro",
         "categoria",
         "tipo"
+
     ]
 
     posibles_descripciones = [
+
         "descripcion",
         "producto",
-        "articulo"
+        "articulo",
+        "detalle"
+
     ]
 
-    posibles_precios = [
+    posibles_precio_lista = [
+
+        "precio_lista",
+        "precio_costo",
+        "lista"
+
+    ]
+
+    posibles_precio_venta = [
+
         "precio_venta",
         "precio",
         "precio_final",
         "pventa"
+
     ]
 
     # =====================================
@@ -61,31 +125,47 @@ def importar_excel(
     # =====================================
 
     col_rubro = next(
+
         (
             c for c in posibles_rubros
             if c in df.columns
         ),
+
         None
     )
 
     col_descripcion = next(
+
         (
             c for c in posibles_descripciones
             if c in df.columns
         ),
+
         None
     )
 
-    col_precio = next(
+    col_precio_lista = next(
+
         (
-            c for c in posibles_precios
+            c for c in posibles_precio_lista
             if c in df.columns
         ),
+
+        None
+    )
+
+    col_precio_venta = next(
+
+        (
+            c for c in posibles_precio_venta
+            if c in df.columns
+        ),
+
         None
     )
 
     # =====================================
-    # VALIDAR
+    # VALIDACIONES
     # =====================================
 
     if not col_descripcion:
@@ -94,17 +174,21 @@ def importar_excel(
             "No se encontró columna descripción"
         )
 
-    if not col_precio:
+    if not col_precio_venta:
 
         raise Exception(
             "No se encontró columna precio"
         )
 
     # =====================================
-    # IMPORTAR FILAS
+    # RECORRER FILAS
     # =====================================
 
     for _, row in df.iterrows():
+
+        # =================================
+        # RUBRO
+        # =================================
 
         rubro = ""
 
@@ -112,37 +196,91 @@ def importar_excel(
 
             rubro = str(
                 row[col_rubro]
-            )
-
-        descripcion = str(
-            row[col_descripcion]
-        )
-
-        precio = row[col_precio]
+            ).strip()
 
         # =================================
-        # LIMPIAR
+        # DESCRIPCIÓN
+        # =================================
+
+        descripcion = (
+            normalizar_descripcion(
+                row[col_descripcion]
+            )
+        )
+
+        # =================================
+        # PRECIOS
+        # =================================
+
+        precio_lista = 0
+
+        if col_precio_lista:
+
+            precio_lista = limpiar_precio(
+                row[col_precio_lista]
+            )
+
+        precio_venta = limpiar_precio(
+            row[col_precio_venta]
+        )
+
+        # =================================
+        # VALIDAR
         # =================================
 
         if (
-            descripcion.strip() == ""
-            or str(precio).strip() == ""
+
+            descripcion == ""
+
+            or precio_venta <= 0
+
         ):
 
             continue
 
         # =================================
-        # INSERTAR
+        # AGREGAR A LISTA
         # =================================
 
-        insertar_producto(
+        productos.append({
 
-            rubro=rubro,
+            "rubro": rubro,
 
-            descripcion=descripcion,
+            "descripcion":
+            descripcion,
 
-            precio_venta=precio,
+            "precio_lista":
+            precio_lista,
+
+            "precio_venta":
+            precio_venta
+        })
+
+    return productos
+
+# =========================================
+# GUARDAR PRODUCTOS
+# =========================================
+
+def guardar_productos_excel(
+    productos,
+    proveedor=""
+):
+
+    for p in productos:
+
+        guardar_o_actualizar_producto(
+
+            rubro=p["rubro"],
+
+            descripcion=
+            p["descripcion"],
+
+            precio_lista=
+            p["precio_lista"],
+
+            precio_venta=
+            p["precio_venta"],
 
             proveedor=proveedor
         )
-        

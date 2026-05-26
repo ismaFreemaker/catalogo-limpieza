@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import os
 
 from database import (
     crear_tabla,
@@ -10,6 +11,11 @@ from database import (
 from importador_pdf import (
     importar_pdf,
     guardar_productos
+)
+
+from importador_excel import (
+    importar_excel,
+    guardar_productos_excel
 )
 
 # =========================================
@@ -28,7 +34,7 @@ st.set_page_config(
 crear_tabla()
 
 # =========================================
-# LOGIN SIMPLE
+# LOGIN
 # =========================================
 
 st.title(
@@ -51,16 +57,22 @@ if password != ADMIN_PASSWORD:
     st.stop()
 
 # =========================================
-# SUBIR PDF
+# IMPORTADOR
 # =========================================
 
 st.header(
-    "Importar PDF"
+    "Importar Archivo"
 )
 
-pdf_file = st.file_uploader(
-    "Subir PDF",
-    type=["pdf"]
+archivo = st.file_uploader(
+
+    "Subir PDF o Excel",
+
+    type=[
+        "pdf",
+        "xlsx",
+        "xls"
+    ]
 )
 
 proveedor = st.text_input(
@@ -68,17 +80,58 @@ proveedor = st.text_input(
 )
 
 # =========================================
-# PROCESAR PDF
+# PROCESAR ARCHIVO
 # =========================================
 
-if pdf_file is not None:
+if archivo is not None:
 
     try:
 
-        productos = importar_pdf(
-            pdf_file,
-            proveedor
+        extension = (
+            os.path.splitext(
+                archivo.name
+            )[1]
+            .lower()
         )
+
+        productos = []
+
+        # =================================
+        # PDF
+        # =================================
+
+        if extension == ".pdf":
+
+            productos = importar_pdf(
+                archivo,
+                proveedor
+            )
+
+        # =================================
+        # EXCEL
+        # =================================
+
+        elif extension in [
+            ".xlsx",
+            ".xls"
+        ]:
+
+            productos = importar_excel(
+                archivo,
+                proveedor
+            )
+
+        # =================================
+        # SIN PRODUCTOS
+        # =================================
+
+        if len(productos) == 0:
+
+            st.warning(
+                "No se encontraron productos"
+            )
+
+            st.stop()
 
         st.success(
             f"Productos encontrados: "
@@ -86,7 +139,7 @@ if pdf_file is not None:
         )
 
         # =================================
-        # DATAFRAME
+        # DATAFRAME PREVIEW
         # =================================
 
         df_preview = pd.DataFrame(
@@ -94,7 +147,7 @@ if pdf_file is not None:
         )
 
         # =================================
-        # RUBROS EXISTENTES
+        # RUBROS
         # =================================
 
         rubros_existentes = [
@@ -104,11 +157,13 @@ if pdf_file is not None:
             "QUIMICA",
             "BEBIDAS",
             "PAPELERA",
+            "ALMACEN",
             "OTROS"
+
         ]
 
         # =================================
-        # SELECT RUBRO
+        # RUBRO EXISTENTE
         # =================================
 
         rubro_seleccionado = st.selectbox(
@@ -163,7 +218,7 @@ if pdf_file is not None:
                 )
 
         # =================================
-        # VISTA PREVIA
+        # PREVIEW
         # =================================
 
         st.subheader(
@@ -180,20 +235,40 @@ if pdf_file is not None:
         )
 
         # =================================
-        # IMPORTAR
+        # GUARDAR
         # =================================
 
         if st.button(
             "Guardar en Base de Datos"
         ):
 
-            guardar_productos(
-                productos,
-                proveedor
-            )
+            # =============================
+            # PDF
+            # =============================
+
+            if extension == ".pdf":
+
+                guardar_productos(
+                    productos,
+                    proveedor
+                )
+
+            # =============================
+            # EXCEL
+            # =============================
+
+            elif extension in [
+                ".xlsx",
+                ".xls"
+            ]:
+
+                guardar_productos_excel(
+                    productos,
+                    proveedor
+                )
 
             st.success(
-                "Productos importados"
+                "Base de datos actualizada"
             )
 
             st.rerun()
@@ -201,7 +276,7 @@ if pdf_file is not None:
     except Exception as e:
 
         st.error(
-            f"Error procesando PDF: {e}"
+            f"Error procesando archivo: {e}"
         )
 
 # =========================================
@@ -238,6 +313,7 @@ busqueda = st.text_input(
 if busqueda:
 
     filtro_descripcion = (
+
         df["descripcion"]
         .astype(str)
         .str.contains(
@@ -248,6 +324,7 @@ if busqueda:
     )
 
     filtro_rubro = (
+
         df["rubro"]
         .astype(str)
         .str.contains(
@@ -279,7 +356,8 @@ st.dataframe(
 
     column_config={
 
-        "rubro": "Rubro",
+        "rubro":
+        "Rubro",
 
         "descripcion":
         "Descripción",
@@ -307,7 +385,7 @@ st.dataframe(
 )
 
 # =========================================
-# DESACTIVAR PRODUCTO
+# DESACTIVAR
 # =========================================
 
 st.subheader(
@@ -315,8 +393,11 @@ st.subheader(
 )
 
 id_producto = st.number_input(
+
     "ID del producto",
+
     min_value=1,
+
     step=1
 )
 
