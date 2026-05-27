@@ -151,7 +151,7 @@ st.dataframe(
 
     df[
         [
-            "rubro",
+            
             "descripcion",
             "precio_venta"
         ]
@@ -159,7 +159,7 @@ st.dataframe(
 
     column_config={
 
-        "rubro": "Rubro",
+        
 
         "descripcion":
         "Descripción",
