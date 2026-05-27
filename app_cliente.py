@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 
+from rapidfuzz import fuzz
+
 from database import (
     crear_tabla,
     obtener_productos
@@ -45,24 +47,23 @@ df = pd.DataFrame(
 # =========================================
 
 st.markdown(
-    
+
     """
     <h1 style='text-align: center;'>
 
     La Diagonal Distribuidora
     </h1>
-    
-    
+
     <h2>
     <span>
     Lista de Precios
     </span>
     </h2>
-    
+
     """,
 
     unsafe_allow_html=True
-    
+
 )
 
 # =========================================
@@ -83,14 +84,6 @@ rubro_seleccionado = st.selectbox(
 )
 
 # =========================================
-# BUSCADOR
-# =========================================
-
-busqueda = st.text_input(
-    "Buscar producto"
-)
-
-# =========================================
 # FILTRAR RUBRO
 # =========================================
 
@@ -102,81 +95,157 @@ if rubro_seleccionado != "TODOS":
     ]
 
 # =========================================
-# FILTRAR BÚSQUEDA
+# BUSCADOR
 # =========================================
 
-if busqueda:
-
-    filtro_descripcion = (
-        df["descripcion"]
-        .astype(str)
-        .str.contains(
-            busqueda,
-            case=False,
-            na=False
-        )
-    )
-
-    filtro_rubro = (
-        df["rubro"]
-        .astype(str)
-        .str.contains(
-            busqueda,
-            case=False,
-            na=False
-        )
-    )
-
-    df = df[
-        filtro_descripcion
-        | filtro_rubro
-    ]
-
-# =========================================
-# ORDENAR
-# =========================================
-
-df = df.sort_values(
-    by=[
-        "rubro",
-        "descripcion"
-    ]
+busqueda = st.text_input(
+    "Buscar producto"
 )
+
+# =========================================
+# BÚSQUEDA INTELIGENTE
+# =========================================
+
+if busqueda.strip() != "":
+
+    texto_busqueda = (
+        busqueda
+        .strip()
+        .upper()
+    )
+
+    resultados = []
+
+    for _, row in df.iterrows():
+
+        descripcion = str(
+            row["descripcion"]
+        ).upper()
+
+        rubro = str(
+            row["rubro"]
+        ).upper()
+
+        # =============================
+        # SCORE DESCRIPCIÓN
+        # =============================
+
+        score_descripcion = fuzz.partial_ratio(
+            texto_busqueda,
+            descripcion
+        )
+
+        # =============================
+        # SCORE RUBRO
+        # =============================
+
+        score_rubro = fuzz.partial_ratio(
+            texto_busqueda,
+            rubro
+        )
+
+        # =============================
+        # MEJOR SCORE
+        # =============================
+
+        score = max(
+            score_descripcion,
+            score_rubro
+        )
+
+        # =============================
+        # FILTRAR RESULTADOS
+        # =============================
+
+        if score >= 60:
+
+            resultados.append({
+
+                "score": score,
+
+                "descripcion":
+                row["descripcion"],
+
+                "precio_venta":
+                row["precio_venta"],
+
+                "rubro":
+                row["rubro"]
+            })
+
+    # =====================================
+    # DATAFRAME RESULTADOS
+    # =====================================
+
+    df = pd.DataFrame(
+        resultados
+    )
+
+    # =====================================
+    # ORDENAR POR SIMILITUD
+    # =====================================
+
+    if not df.empty:
+
+        df = df.sort_values(
+            by="score",
+            ascending=False
+        )
+
+else:
+
+    # =====================================
+    # ORDEN NORMAL
+    # =====================================
+
+    df = df.sort_values(
+        by=[
+            "rubro",
+            "descripcion"
+        ]
+    )
 
 # =========================================
 # TABLA CLIENTE
 # =========================================
 
-st.dataframe(
+if not df.empty:
 
-    df[
-        [
-            
-            "descripcion",
-            "precio_venta"
-        ]
-    ],
+    st.dataframe(
 
-    column_config={
+        df[
+            [
+                "descripcion",
+                "precio_venta"
+            ]
+        ],
 
-        
+        column_config={
 
-        "descripcion":
-        "Descripción",
+            "descripcion":
+            "Descripción",
 
-        "precio_venta":
-        st.column_config.NumberColumn(
+            "precio_venta":
+            st.column_config.NumberColumn(
 
-            "Precio",
+                "Precio",
 
-            format="$ %.0f"
-        )
-    },
+                format="$ %.0f"
+            )
+        },
 
-    use_container_width=True,
+        use_container_width=True,
 
-    hide_index=True
-)
+        hide_index=True,
+
+        height=700
+    )
+
+else:
+
+    st.warning(
+        "No se encontraron productos"
+    )
 
 # =========================================
 # TOTAL PRODUCTOS
