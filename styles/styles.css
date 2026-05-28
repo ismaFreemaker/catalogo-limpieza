@@ -31,7 +31,7 @@ PADDING GENERAL
 
     padding-right: 2rem;
 
-    max-width: 1000px;
+    max-width: 1100px;
 }
 
 /* ========================================
@@ -42,47 +42,62 @@ img {
 
     margin-top: 10px;
 
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 /* ========================================
 TITULO PRINCIPAL
 ======================================== */
 
+
 .main-title {
 
     color: #001B57;
 
-    font-size: 58px;
+    font-size: 52px;
 
     font-weight: 800;
 
     line-height: 1.1;
 
-    margin-top: 10px;
+    margin-top: 24px;
 
-    margin-bottom: 10px;
+    margin-bottom: 30px;
+
+    padding-bottom: 12px;
+
+    border-bottom: 5px solid #1E4ED8;
+
+    display: table;
+
+    margin-left: auto;
+
+    margin-right: auto;
+
+    text-align: center;
 }
+.distribuidora {
 
-/* ========================================
-LINEA AZUL DEBAJO DEL TITULO
-======================================== */
+    color: #001B57;
 
-.main-title::after {
+    font-size: 38px;
 
-    content: "";
+    font-weight: 400;
+}
+.lista-precios {
 
-    display: block;
+    
+    border-bottom: 3px solid #1E4ED8;
 
-    width: 70px;
+    margin-top: 24px;
 
-    height: 6px;
+    margin-bottom: 50px;
 
-    border-radius: 20px;
+    color: #001B57;
 
-    background: #1E4ED8;
+    font-size: 22px;
 
-    margin-top: 18px;
+    font-weight: 600;
 }
 
 /* ========================================
@@ -93,11 +108,9 @@ label {
 
     color: #001B57 !important;
 
-    font-size: 20px !important;
+    font-size: 18px !important;
 
     font-weight: 600 !important;
-
-    margin-bottom: 8px !important;
 }
 
 /* ========================================
@@ -106,44 +119,36 @@ SELECTBOX
 
 .stSelectbox div[data-baseweb="select"] {
 
-    border-radius: 24px !important;
+    border: 1px solid #D9DFEA !important;
 
-    border: 2px solid #D9DFEA !important;
-
-    min-height: 70px !important;
+    min-height: 58px !important;
 
     background-color: white !important;
 
-    font-size: 24px !important;
-
-    padding-left: 10px !important;
-
     color: #001B57 !important;
 
-    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
 }
 
 /* ========================================
-INPUT BUSCADOR
+BUSCADOR
 ======================================== */
 
 .stTextInput input {
 
-    border-radius: 24px !important;
+    border: 1px solid #D9DFEA !important;
 
-    border: 2px solid #D9DFEA !important;
+    min-height: 58px !important;
 
-    min-height: 70px !important;
+    font-size: 18px !important;
 
-    font-size: 24px !important;
-
-    padding-left: 25px !important;
+    padding-left: 18px !important;
 
     background-color: white !important;
 
     color: #001B57 !important;
 
-    /* box-shadow: 0 2px 10px rgba(0,0,0,0.03); */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
 }
 
 /* ========================================
@@ -161,7 +166,7 @@ TABLA GENERAL
 
 [data-testid="stDataFrame"] {
 
-    border-radius: 24px;
+    border-radius: 22px;
 
     overflow: hidden;
 
@@ -182,11 +187,9 @@ HEADER TABLA
 
     color: white !important;
 
-    font-size: 22px !important;
+    font-size: 18px !important;
 
     font-weight: 700 !important;
-
-    height: 65px !important;
 
     border: none !important;
 }
@@ -201,11 +204,11 @@ FILAS
 
     border-bottom: 1px solid #ECEFF5 !important;
 
-    height: 95px !important;
+    height: 65px !important;
 }
 
 /* ========================================
-HOVER FILAS
+HOVER
 ======================================== */
 
 [data-testid="stDataFrame"] tbody tr:hover {
@@ -219,7 +222,7 @@ CELDAS
 
 [data-testid="stDataFrame"] tbody td {
 
-    font-size: 20px !important;
+    font-size: 17px !important;
 
     color: #001B57 !important;
 
@@ -233,8 +236,6 @@ PRECIO
 [data-testid="stDataFrame"] tbody td:last-child {
 
     font-weight: 700 !important;
-
-    font-size: 22px !important;
 }
 
 /* ========================================
@@ -243,7 +244,7 @@ WARNING
 
 .stAlert {
 
-    border-radius: 20px !important;
+    border-radius: 14px !important;
 }
 
 /* ========================================
@@ -252,17 +253,11 @@ CAPTION
 
 .stCaption {
 
-    background-color: #EEF1F7;
-
-    padding: 18px 22px;
-
-    border-radius: 20px;
-
-    font-size: 18px !important;
-
     color: #001B57 !important;
 
-    margin-top: 20px;
+    font-size: 15px !important;
+
+    margin-top: 10px;
 }
 
 /* ========================================
@@ -280,30 +275,6 @@ MOBILE
 
     .main-title {
 
-        font-size: 42px;
-    }
-
-    .stTextInput input {
-
-        font-size: 18px !important;
-
-        min-height: 60px !important;
-    }
-
-    .stSelectbox div[data-baseweb="select"] {
-
-        font-size: 18px !important;
-
-        min-height: 60px !important;
-    }
-
-    [data-testid="stDataFrame"] tbody td {
-
-        font-size: 16px !important;
-    }
-
-    [data-testid="stDataFrame"] thead tr th {
-
-        font-size: 18px !important;
+        font-size: 38px;
     }
 }

@@ -66,8 +66,10 @@ df = pd.DataFrame(
 st.markdown(
     """
     <div class="main-title">
-        Lista de Precios
+        La Diagonal 
+        <br><span class="distribuidora">Distribuidora</span>
     </div>
+    <br><span class="lista-precios">Lista de Precios</span>
     """,
     unsafe_allow_html=True
 )
