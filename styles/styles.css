@@ -131,28 +131,28 @@ label {
 SELECTBOX
 ======================================== */
 
-/* .stSelectbox div[data-baseweb="select"] {
+.stSelectbox div[data-baseweb="select"] {
 
-    border: 1px solid #D9DFEA !important;
+    border: 1px solid #014cd6 !important;   
 
-    min-height: 58px !important;
+    /* min-height: 58px !important;
 
     background-color: white !important;
 
     color: #001B57 !important;
 
-    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-} */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03); */
+}
 
 /* ========================================
 BUSCADOR
 ======================================== */
 
-/* .stTextInput input {
+.stTextInput input {
 
-    border: 1px solid #D9DFEA !important;
+    border: 1px solid #014cd6 !important;
 
-    min-height: 58px !important;
+    /* min-height: 58px !important;
 
     font-size: 18px !important;
 
@@ -162,8 +162,8 @@ BUSCADOR
 
     color: #001B57 !important;
 
-    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-} */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03); */
+}
 
 /* ========================================
 PLACEHOLDER
