@@ -18,6 +18,21 @@ st.set_page_config(
 )
 
 # =========================================
+# CARGAR CSS
+# =========================================
+
+def cargar_css():
+
+    with open("styles/styles.css") as f:
+
+        st.markdown(
+            f"<style>{f.read()}</style>",
+            unsafe_allow_html=True
+        )
+
+cargar_css()
+
+# =========================================
 # CREAR TABLA
 # =========================================
 
@@ -42,28 +57,19 @@ df = pd.DataFrame(
     ]
 )
 
+
+
 # =========================================
-# TÍTULO
+# TITULO
 # =========================================
 
 st.markdown(
-
     """
-    <h1 style='text-align: center;'>
-
-    La Diagonal Distribuidora
-    </h1>
-
-    <h2>
-    <span>
-    Lista de Precios
-    </span>
-    </h2>
-
+    <div class="main-title">
+        Lista de Precios
+    </div>
     """,
-
     unsafe_allow_html=True
-
 )
 
 # =========================================
@@ -99,7 +105,8 @@ if rubro_seleccionado != "TODOS":
 # =========================================
 
 busqueda = st.text_input(
-    "Buscar producto"
+    "",
+    placeholder="🔍 Buscar producto..."
 )
 
 # =========================================
@@ -126,36 +133,20 @@ if busqueda.strip() != "":
             row["rubro"]
         ).upper()
 
-        # =============================
-        # SCORE DESCRIPCIÓN
-        # =============================
-
         score_descripcion = fuzz.partial_ratio(
             texto_busqueda,
             descripcion
         )
-
-        # =============================
-        # SCORE RUBRO
-        # =============================
 
         score_rubro = fuzz.partial_ratio(
             texto_busqueda,
             rubro
         )
 
-        # =============================
-        # MEJOR SCORE
-        # =============================
-
         score = max(
             score_descripcion,
             score_rubro
         )
-
-        # =============================
-        # FILTRAR RESULTADOS
-        # =============================
 
         if score >= 60:
 
@@ -173,17 +164,9 @@ if busqueda.strip() != "":
                 row["rubro"]
             })
 
-    # =====================================
-    # DATAFRAME RESULTADOS
-    # =====================================
-
     df = pd.DataFrame(
         resultados
     )
-
-    # =====================================
-    # ORDENAR POR SIMILITUD
-    # =====================================
 
     if not df.empty:
 
@@ -193,10 +176,6 @@ if busqueda.strip() != "":
         )
 
 else:
-
-    # =====================================
-    # ORDEN NORMAL
-    # =====================================
 
     df = df.sort_values(
         by=[
