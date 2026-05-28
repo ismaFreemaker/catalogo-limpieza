@@ -54,17 +54,19 @@ TITULO PRINCIPAL
 
     color: #001B57;
 
-    font-size: 52px;
+    font-family: "Times New Roman", serif;
 
-    font-weight: 800;
+    font-size: 80px;
 
-    line-height: 1.1;
+    font-weight: 500;
+
+    line-height: 0.9;
 
     margin-top: 24px;
 
-    margin-bottom: 30px;
+    margin-bottom: 0px;
 
-    padding-bottom: 12px;
+    padding-bottom: 10px;
 
     border-bottom: 5px solid #1E4ED8;
 
@@ -76,14 +78,26 @@ TITULO PRINCIPAL
 
     text-align: center;
 }
+
 .distribuidora {
+
+    display: block;
+
+    font-family: Arial, sans-serif;
 
     color: #001B57;
 
-    font-size: 38px;
+    font-size: 20px;
 
-    font-weight: 400;
+    font-weight: 500;
+
+    letter-spacing: 2px;
+
+    margin-top: 5px;
+
+    padding-top: 0px;
 }
+
 .lista-precios {
 
     
@@ -117,7 +131,7 @@ label {
 SELECTBOX
 ======================================== */
 
-.stSelectbox div[data-baseweb="select"] {
+/* .stSelectbox div[data-baseweb="select"] {
 
     border: 1px solid #D9DFEA !important;
 
@@ -128,13 +142,13 @@ SELECTBOX
     color: #001B57 !important;
 
     box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-}
+} */
 
 /* ========================================
 BUSCADOR
 ======================================== */
 
-.stTextInput input {
+/* .stTextInput input {
 
     border: 1px solid #D9DFEA !important;
 
@@ -149,7 +163,7 @@ BUSCADOR
     color: #001B57 !important;
 
     box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-}
+} */
 
 /* ========================================
 PLACEHOLDER
