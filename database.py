@@ -283,3 +283,41 @@ def desactivar_producto(
     conn.commit()
 
     conn.close()    
+
+
+# =========================================
+# OBTENER PROVEEDORES
+# =========================================
+
+def obtener_proveedores():
+
+    conn = conectar()
+
+    cursor = conn.cursor()
+
+    cursor.execute("""
+
+        SELECT DISTINCT proveedor
+
+        FROM productos
+
+        WHERE activo = 1
+
+        AND proveedor IS NOT NULL
+
+        AND proveedor != ''
+
+        ORDER BY proveedor
+
+    """)
+
+    proveedores = [
+
+        fila[0]
+
+        for fila in cursor.fetchall()
+    ]
+
+    conn.close()
+
+    return proveedores

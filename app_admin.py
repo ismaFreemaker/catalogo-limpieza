@@ -6,6 +6,7 @@ from database import (
     crear_tabla,
     desactivar_producto,
     obtener_productos
+    obtener_proveedores,
 )
 
 from importador_pdf import (
@@ -302,6 +303,52 @@ df = pd.DataFrame(
     ]
 )
 
+# =========================================
+# FILTRO PROVEEDOR
+# =========================================
+
+proveedores = obtener_proveedores()
+
+proveedor_filtro = st.selectbox(
+
+    "Filtrar por proveedor",
+
+    ["TODOS"] + proveedores
+)
+
+
+# =========================================
+# FILTRAR PROVEEDOR
+# =========================================
+
+if proveedor_filtro != "TODOS":
+
+    conn_df = pd.read_sql_query(
+
+        f"""
+
+        SELECT
+            id,
+            rubro,
+            descripcion,
+            precio_lista,
+            precio_venta
+
+        FROM productos
+
+        WHERE activo = 1
+
+        AND proveedor = ?
+
+        """,
+
+        con=__import__("sqlite3")
+        .connect("productos.db"),
+
+        params=[proveedor_filtro]
+    )
+
+    df = conn_df
 # =========================================
 # BUSCADOR
 # =========================================
