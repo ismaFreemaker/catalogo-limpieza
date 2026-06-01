@@ -5,8 +5,8 @@ import os
 from database import (
     crear_tabla,
     desactivar_producto,
-    obtener_productos
-    obtener_proveedores,
+    obtener_productos,
+    obtener_proveedores
 )
 
 from importador_pdf import (
