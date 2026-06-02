@@ -107,8 +107,7 @@ def importar_excel(
 
         "precio_lista",
         "precio_costo",
-        "lista",
-        "Lista1"
+        "lista"
         
 
     ]
