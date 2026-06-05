@@ -23,12 +23,20 @@ st.set_page_config(
 
 def cargar_css():
 
-    with open("styles/styles.css") as f:
+    try:
 
-        st.markdown(
-            f"<style>{f.read()}</style>",
-            unsafe_allow_html=True
-        )
+        with open(
+            "styles/styles.css",
+            encoding="utf-8"
+        ) as f:
+
+            st.markdown(
+                f"<style>{f.read()}</style>",
+                unsafe_allow_html=True
+            )
+
+    except:
+        pass
 
 cargar_css()
 
@@ -39,7 +47,7 @@ cargar_css()
 crear_tabla()
 
 # =========================================
-# OBTENER PRODUCTOS
+# PRODUCTOS
 # =========================================
 
 productos = obtener_productos()
@@ -49,6 +57,7 @@ df = pd.DataFrame(
     productos,
 
     columns=[
+
         "id",
         "rubro",
         "descripcion",
@@ -57,20 +66,44 @@ df = pd.DataFrame(
     ]
 )
 
-
-
 # =========================================
 # TITULO
 # =========================================
 
 st.markdown(
     """
-    <div class="main-title">
-        LA DIAGONAL
-        <br><span class="distribuidora">DISTRIBUIDORA</span>
+    <div style="
+        text-align:center;
+        margin-bottom:10px;
+    ">
+
+        <h1 style="
+            margin-bottom:0;
+        ">
+            LA DIAGONAL
+        </h1>
+
+        <h3 style="
+            margin-top:0;
+            color:#666;
+        ">
+            DISTRIBUIDORA
+        </h3>
+
     </div>
-    <br><span class="lista-precios">Lista de Precios</span>
+
+    <h2>
+        Lista de Precios
+    </h2>
+
+    <div style="
+        color:#666;
+        margin-bottom:20px;
+    ">
+        Precios especiales para comercios.
+    </div>
     """,
+
     unsafe_allow_html=True
 )
 
@@ -84,16 +117,15 @@ rubros = sorted(
     .unique()
 )
 
-rubros.insert(0, "TODOS")
+rubros.insert(
+    0,
+    "TODOS"
+)
 
 rubro_seleccionado = st.selectbox(
     "Filtrar por rubro",
     rubros
 )
-
-# =========================================
-# FILTRAR RUBRO
-# =========================================
 
 if rubro_seleccionado != "TODOS":
 
@@ -112,15 +144,15 @@ busqueda = st.text_input(
 )
 
 # =========================================
-# BÚSQUEDA INTELIGENTE
+# BUSQUEDA INTELIGENTE
 # =========================================
 
 if busqueda.strip() != "":
 
     texto_busqueda = (
         busqueda
-        .strip()
         .upper()
+        .strip()
     )
 
     resultados = []
@@ -156,14 +188,20 @@ if busqueda.strip() != "":
 
                 "score": score,
 
+                "id":
+                row["id"],
+
+                "rubro":
+                row["rubro"],
+
                 "descripcion":
                 row["descripcion"],
 
-                "precio_venta":
-                row["precio_venta"],
+                "precio_lista":
+                row["precio_lista"],
 
-                "rubro":
-                row["rubro"]
+                "precio_venta":
+                row["precio_venta"]
             })
 
     df = pd.DataFrame(
@@ -187,49 +225,58 @@ else:
     )
 
 # =========================================
-# TABLA CLIENTE
+# LISTA PRODUCTOS
 # =========================================
 
 if not df.empty:
 
-    st.dataframe(
+    contenedor = st.container(height=650)
 
-        df[
-            [
-                "descripcion",
-                "precio_venta"
-            ]
-        ],
+    with contenedor:
 
-        column_config={
+        for _, row in df.iterrows():
 
-            "descripcion":
-            "Descripción",
-
-            "precio_venta":
-            st.column_config.NumberColumn(
-
-                "Precio",
-
-                format="$ %.0f"
+            descripcion = str(
+                row["descripcion"]
             )
-        },
 
-        use_container_width=True,
+            precio_actual = float(
+                row["precio_venta"]
+            )
 
-        hide_index=True,
+            precio_anterior = round(
+                precio_actual * 1.20
+            )
 
-        height=700
-    )
+            with st.container(border=True):
+
+                col1, col2 = st.columns(
+                    [4, 1]
+                )
+
+                with col1:
+
+                    st.markdown(
+                        f"**{descripcion}**"
+                    )
+
+                with col2:
+
+                    st.markdown(
+                        f"### $ {precio_actual:,.0f}"
+                    )
+                    st.markdown(
+                        f"~~$ {precio_anterior:,.0f}~~"
+                    )
+
 
 else:
 
     st.warning(
         "No se encontraron productos"
     )
-
 # =========================================
-# TOTAL PRODUCTOS
+# TOTAL
 # =========================================
 
 st.caption(
