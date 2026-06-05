@@ -70,42 +70,18 @@ df = pd.DataFrame(
 # TITULO
 # =========================================
 
-st.markdown(
-    """
-    <div style="
-        text-align:center;
-        margin-bottom:10px;
-    ">
+st.markdown("""
+<style>
+h1, h2, h3 {
+    text-align: center;
+}
+</style>
+""", unsafe_allow_html=True)
 
-        <h1 style="
-            margin-bottom:0;
-        ">
-            LA DIAGONAL
-        </h1>
-
-        <h3 style="
-            margin-top:0;
-            color:#666;
-        ">
-            DISTRIBUIDORA
-        </h3>
-
-    </div>
-
-    <h2>
-        Lista de Precios
-    </h2>
-
-    <div style="
-        color:#666;
-        margin-bottom:20px;
-    ">
-        Precios especiales para comercios.
-    </div>
-    """,
-
-    unsafe_allow_html=True
-)
+st.title("LA DIAGONAL")
+st.subheader("DISTRIBUIDORA")
+st.header("Lista de Precios")
+st.caption("Precios especiales para comercios.")
 
 # =========================================
 # FILTRO RUBRO
@@ -263,10 +239,10 @@ if not df.empty:
                 with col2:
 
                     st.markdown(
-                        f"### $ {precio_actual:,.0f}"
+                        f"#### :green[ $ {precio_actual:,.0f}]"
                     )
                     st.markdown(
-                        f"~~$ {precio_anterior:,.0f}~~"
+                        f"~~:red[${precio_anterior:,.0f}]~~"
                     )
 
 
