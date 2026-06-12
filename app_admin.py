@@ -148,75 +148,68 @@ if archivo is not None:
         )
 
         # =================================
-        # RUBROS
+        # RUBROS DETECTADOS
         # =================================
 
-        rubros_existentes = [
+        rubros_detectados = sorted(
 
-            "LIMPIEZA",
-            "PERFUMERIA",
-            "QUIMICA",
-            "BEBIDAS",
-            "PAPELERA",
-            "ALMACEN",
-            "OTROS"
+            list(
 
-        ]
+                set(
 
-        # =================================
-        # RUBRO EXISTENTE
-        # =================================
-
-        rubro_seleccionado = st.selectbox(
-
-            "Seleccionar rubro existente",
-
-            [""] + rubros_existentes
-        )
-
-        # =================================
-        # NUEVO RUBRO
-        # =================================
-
-        nuevo_rubro = st.text_input(
-            "O escribir nuevo rubro"
-        )
-
-        # =================================
-        # RUBRO FINAL
-        # =================================
-
-        rubro_general = ""
-
-        if nuevo_rubro.strip() != "":
-
-            rubro_general = (
-                nuevo_rubro
-                .strip()
-                .upper()
+                    df_preview["rubro"]
+                    .fillna("OTROS")
+                    .astype(str)
+                    .str.upper()
+                )
             )
+        )
+
+        st.subheader(
+            "Seleccionar rubros a importar"
+        )
+
+        rubros_seleccionados = st.multiselect(
+
+            "Rubros detectados",
+
+            rubros_detectados,
+
+            default=rubros_detectados
+        )
+
+        # =================================
+        # FILTRAR RUBROS
+        # =================================
+
+        if len(rubros_seleccionados) > 0:
+
+            df_preview = df_preview[
+
+                df_preview["rubro"]
+                .astype(str)
+                .str.upper()
+                .isin(rubros_seleccionados)
+            ]
+
+            productos = [
+
+                p for p in productos
+
+                if str(
+                    p["rubro"]
+                ).upper()
+
+                in rubros_seleccionados
+            ]
 
         else:
 
-            rubro_general = (
-                rubro_seleccionado
+            st.warning(
+                "Seleccioná al menos un rubro"
             )
 
-        # =================================
-        # APLICAR RUBRO
-        # =================================
-
-        if rubro_general != "":
-
-            df_preview["rubro"] = (
-                rubro_general
-            )
-
-            for producto in productos:
-
-                producto["rubro"] = (
-                    rubro_general
-                )
+            st.stop()
 
         # =================================
         # PREVIEW

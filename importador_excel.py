@@ -6,6 +6,12 @@ from database import (
 )
 
 # =========================================
+# CONFIG DESCUENTO
+# =========================================
+
+DESCUENTO_COMERCIO = 0.20
+
+# =========================================
 # LIMPIAR PRECIO
 # =========================================
 
@@ -28,12 +34,29 @@ def limpiar_precio(valor):
         return 0
 
 # =========================================
-# NORMALIZAR DESCRIPCIÓN
+# NORMALIZAR TEXTO
 # =========================================
 
-def normalizar_descripcion(
-    texto
-):
+def normalizar_texto(texto):
+
+    texto = (
+        str(texto)
+        .lower()
+        .strip()
+    )
+
+    texto = texto.replace(
+        " ",
+        "_"
+    )
+
+    return texto
+
+# =========================================
+# NORMALIZAR DESCRIPCION
+# =========================================
+
+def normalizar_descripcion(texto):
 
     texto = (
         str(texto)
@@ -65,7 +88,8 @@ def importar_excel(
     # =====================================
 
     df = pd.read_excel(
-        archivo_excel
+        archivo_excel,
+        engine="xlrd"
     )
 
     # =====================================
@@ -74,16 +98,13 @@ def importar_excel(
 
     df.columns = [
 
-        str(col)
-        .strip()
-        .lower()
-        .replace(" ", "_")
+        normalizar_texto(col)
 
         for col in df.columns
     ]
 
     # =====================================
-    # MAPEO FLEXIBLE
+    # POSIBLES COLUMNAS
     # =====================================
 
     posibles_rubros = [
@@ -107,17 +128,11 @@ def importar_excel(
 
         "precio_lista",
         "precio_costo",
-        "lista"
-        
-
-    ]
-
-    posibles_precio_venta = [
-
-        "precio_venta",
-        "precio",
-        "precio_final",
-        "pventa"
+        "lista",
+        "lista_1",
+        "lista1",
+        "precio_lista_1",
+        "precio_publico"
 
     ]
 
@@ -155,16 +170,6 @@ def importar_excel(
         None
     )
 
-    col_precio_venta = next(
-
-        (
-            c for c in posibles_precio_venta
-            if c in df.columns
-        ),
-
-        None
-    )
-
     # =====================================
     # VALIDACIONES
     # =====================================
@@ -175,10 +180,10 @@ def importar_excel(
             "No se encontró columna descripción"
         )
 
-    if not col_precio_venta:
+    if not col_precio_lista:
 
         raise Exception(
-            "No se encontró columna precio"
+            "No se encontró columna LISTA 1"
         )
 
     # =====================================
@@ -200,7 +205,7 @@ def importar_excel(
             ).strip()
 
         # =================================
-        # DESCRIPCIÓN
+        # DESCRIPCION
         # =================================
 
         descripcion = (
@@ -210,19 +215,23 @@ def importar_excel(
         )
 
         # =================================
-        # PRECIOS
+        # PRECIO LISTA
         # =================================
 
-        precio_lista = 0
+        precio_lista = limpiar_precio(
+            row[col_precio_lista]
+        )
 
-        if col_precio_lista:
+        # =================================
+        # PRECIO COMERCIO
+        # =================================
 
-            precio_lista = limpiar_precio(
-                row[col_precio_lista]
-            )
+        precio_venta = round(
 
-        precio_venta = limpiar_precio(
-            row[col_precio_venta]
+            precio_lista
+            * (1 - DESCUENTO_COMERCIO),
+
+            2
         )
 
         # =================================
@@ -233,19 +242,20 @@ def importar_excel(
 
             descripcion == ""
 
-            or precio_venta <= 0
+            or precio_lista <= 0
 
         ):
 
             continue
 
         # =================================
-        # AGREGAR A LISTA
+        # AGREGAR PRODUCTO
         # =================================
 
         productos.append({
 
-            "rubro": rubro,
+            "rubro":
+            rubro,
 
             "descripcion":
             descripcion,
