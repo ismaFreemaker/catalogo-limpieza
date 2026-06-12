@@ -87,10 +87,24 @@ def importar_excel(
     # LEER EXCEL
     # =====================================
 
-    df = pd.read_excel(
-        archivo_excel,
-        engine="xlrd"
+    nombre_archivo = (
+        archivo_excel.name
+        .lower()
     )
+
+    if nombre_archivo.endswith(".xls"):
+
+        df = pd.read_excel(
+            archivo_excel,
+            engine="xlrd"
+        )
+
+    else:
+
+        df = pd.read_excel(
+            archivo_excel,
+            engine="openpyxl"
+        )
 
     # =====================================
     # NORMALIZAR COLUMNAS
@@ -228,11 +242,12 @@ def importar_excel(
 
         precio_venta = round(
 
-            precio_lista
-            * (1 - DESCUENTO_COMERCIO),
+            (
+                precio_lista
+                * (1 - DESCUENTO_COMERCIO)
+            ) / 10
 
-            2
-        )
+        ) * 10
 
         # =================================
         # VALIDAR

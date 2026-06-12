@@ -169,14 +169,28 @@ if archivo is not None:
             "Seleccionar rubros a importar"
         )
 
-        rubros_seleccionados = st.multiselect(
+        rubros_seleccionados = []
 
-            "Rubros detectados",
+        # =================================
+        # CHECKBOXS
+        # =================================
 
-            rubros_detectados,
+        for rubro in rubros_detectados:
 
-            default=rubros_detectados
-        )
+            marcado = st.checkbox(
+
+                rubro,
+
+                value=True,
+
+                key=f"rubro_{rubro}"
+            )
+
+            if marcado:
+
+                rubros_seleccionados.append(
+                    rubro
+                )
 
         # =================================
         # FILTRAR RUBROS
