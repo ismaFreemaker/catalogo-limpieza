@@ -220,8 +220,8 @@ if not df.empty:
                 row["precio_venta"]
             )
 
-            precio_anterior = round(
-                precio_actual * 1.20
+            precio_anterior = float(
+                row["precio_lista"]
             )
 
             with st.container(border=True):
